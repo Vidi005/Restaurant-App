@@ -53,11 +53,14 @@ class RestaurantCardWidget extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisSize: MainAxisSize.max,
                   spacing: 4,
                   children: [
                     Text(
                       restaurant.name,
                       style: Theme.of(context).textTheme.titleMedium,
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 1,
                     ),
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.center,

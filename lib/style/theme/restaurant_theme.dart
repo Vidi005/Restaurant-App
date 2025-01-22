@@ -10,6 +10,7 @@ class RestaurantTheme {
     return TextTheme(
       displayLarge: GoogleFonts.montserratTextTheme().displayLarge?.copyWith(
             color: primaryTextColor,
+            fontWeight: FontWeight.bold,
           ),
       displayMedium: GoogleFonts.montserratTextTheme().displayMedium?.copyWith(
             color: primaryTextColor,
@@ -17,19 +18,21 @@ class RestaurantTheme {
       displaySmall: GoogleFonts.montserratTextTheme().displaySmall?.copyWith(
             color: primaryTextColor,
           ),
-      headlineLarge:
-          GoogleFonts.merriweatherTextTheme().headlineLarge?.copyWith(
-                color: primaryTextColor,
-              ),
+      headlineLarge: GoogleFonts.montserratTextTheme().headlineLarge?.copyWith(
+            color: primaryTextColor,
+            fontWeight: FontWeight.bold,
+          ),
       headlineMedium:
-          GoogleFonts.merriweatherTextTheme().headlineMedium?.copyWith(
+          GoogleFonts.montserratTextTheme().headlineMedium?.copyWith(
                 color: primaryTextColor,
               ),
-      headlineSmall:
-          GoogleFonts.merriweatherTextTheme().headlineSmall?.copyWith(
-                color: primaryTextColor,
-              ),
-      titleLarge: GoogleFonts.merriweatherTextTheme().titleLarge,
+      headlineSmall: GoogleFonts.montserratTextTheme().headlineSmall?.copyWith(
+            color: primaryTextColor,
+          ),
+      titleLarge: GoogleFonts.merriweatherTextTheme().titleLarge?.copyWith(
+            color: accentTextColor,
+            fontWeight: FontWeight.bold,
+          ),
       titleMedium: GoogleFonts.merriweatherTextTheme().titleMedium?.copyWith(
             color: accentTextColor,
           ),
@@ -38,6 +41,7 @@ class RestaurantTheme {
           ),
       bodyLarge: GoogleFonts.nunitoTextTheme().bodyLarge?.copyWith(
             color: primaryTextColor,
+            fontWeight: FontWeight.bold,
           ),
       bodyMedium: GoogleFonts.nunitoTextTheme().bodyMedium?.copyWith(
             color: primaryTextColor,

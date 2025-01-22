@@ -1,8 +1,10 @@
 import 'dart:async';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
 import 'package:restaurant_app/provider/detail/restaurant_detail_provider.dart';
+import 'package:restaurant_app/screen/detail/detail_content_widget.dart';
 import 'package:restaurant_app/static/restaurant_detail_result_state.dart';
 import 'package:restaurant_app/static/restaurant_image_resolution.dart';
 
@@ -40,15 +42,13 @@ class _DetailScreenState extends State<DetailScreen> {
             floating: false,
             pinned: true,
             backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
-            expandedHeight: MediaQuery.of(context).size.height * 0.75,
+            expandedHeight: MediaQuery.of(context).size.width,
             shadowColor: Theme.of(context).appBarTheme.shadowColor,
             leading: Padding(
               padding: const EdgeInsets.all(8),
               child: CircleAvatar(
-                backgroundColor: Theme.of(context)
-                    .appBarTheme
-                    .foregroundColor
-                    ?.withAlpha(128),
+                backgroundColor:
+                    Theme.of(context).colorScheme.onPrimary.withAlpha(128),
                 child: IconButton(
                   icon: const Icon(Icons.arrow_back),
                   onPressed: () => Navigator.pop(context),
@@ -72,6 +72,7 @@ class _DetailScreenState extends State<DetailScreen> {
                           child: CircularProgressIndicator(),
                         ),
                         fit: BoxFit.cover,
+                        alignment: Alignment.center,
                         width: double.maxFinite,
                       ),
                     _ => Center(
@@ -83,12 +84,15 @@ class _DetailScreenState extends State<DetailScreen> {
                   };
                 }),
               ),
+              expandedTitleScale: 1.25,
               title: Consumer<RestaurantDetailProvider>(
                 builder: (context, value, child) {
                   return switch (value.resultState) {
                     RestaurantDetailLoadedState(data: var restaurant) => Text(
                         restaurant.name,
                         style: Theme.of(context).textTheme.titleLarge,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                       ),
                     _ => Text(
                         'Detail Restaurant',
@@ -109,10 +113,18 @@ class _DetailScreenState extends State<DetailScreen> {
                         child: CircularProgressIndicator(),
                       ),
                     RestaurantDetailLoadedState(data: var restaurant) =>
-                      const Placeholder(),
-                    RestaurantDetailErrorState(error: var message) => Center(
-                        child: Text(message),
-                      ),
+                      DetailContentWidget(restaurant: restaurant),
+                    RestaurantDetailErrorState(error: var message) =>
+                      Builder(builder: (context) {
+                        SchedulerBinding.instance.addPostFrameCallback((_) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text('Error: $message'),
+                            ),
+                          );
+                        });
+                        return const SizedBox();
+                      }),
                     _ => const SizedBox(),
                   };
                 },

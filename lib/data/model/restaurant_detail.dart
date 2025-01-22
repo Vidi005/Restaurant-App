@@ -41,7 +41,7 @@ class RestaurantDetail {
               .toList()
           : [],
       menus: Menus.fromJson(json['menus']),
-      rating: json['rating'],
+      rating: json['rating']?.toDouble(),
       customerReviews: json['customerReviews'] != null
           ? (json['customerReviews'] as List)
               .map((customerReview) => CustomerReview.fromJson(customerReview))
