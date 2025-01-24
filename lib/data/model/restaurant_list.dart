@@ -4,7 +4,7 @@ class RestaurantList {
   String description;
   String pictureId;
   String city;
-  double rating;
+  num rating;
 
   RestaurantList({
     required this.id,

@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:restaurant_app/data/model/customer_review_response.dart';
 import 'package:restaurant_app/data/model/restaurant_detail_response.dart';
 import 'package:restaurant_app/data/model/restaurant_list_response.dart';
 import 'package:restaurant_app/data/model/restaurant_search_response.dart';
@@ -31,6 +32,23 @@ class ApiServices {
       return RestaurantDetailResponse.fromJson(jsonDecode(response.body));
     } else {
       throw Exception('Failed to load Restaurant Detail');
+    }
+  }
+
+  Future<CustomerReviewResponse> postCustomerReview(id, name, review) async {
+    var encodedJsonData =
+        'id=${Uri.encodeQueryComponent(id)}&name=${Uri.encodeQueryComponent(name)}&review=${Uri.encodeQueryComponent(review)}';
+    var response = await http.post(
+      Uri.parse('$baseUrl/review'),
+      headers: <String, String>{
+        'Content-Type': 'application/x-www-form-urlencoded'
+      },
+      body: encodedJsonData,
+    );
+    if (response.statusCode == 201) {
+      return CustomerReviewResponse.fromJson(jsonDecode(response.body));
+    } else {
+      throw Exception('Failed to post Customer Review');
     }
   }
 }

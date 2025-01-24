@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:restaurant_app/data/model/restaurant_detail.dart';
+import 'package:restaurant_app/provider/detail/customer_reviews_provider.dart';
+import 'package:restaurant_app/screen/detail/add_customer_review_widget.dart';
+import 'package:restaurant_app/screen/detail/customer_reviews_widget.dart';
+import 'package:restaurant_app/static/customer_review_state.dart';
 
 class DetailContentWidget extends StatelessWidget {
   final RestaurantDetail restaurant;
@@ -94,19 +99,7 @@ class DetailContentWidget extends StatelessWidget {
                   ).toList()
                 : const [SizedBox()],
           ),
-          const SizedBox(height: 4),
-          Container(
-            width: MediaQuery.of(context).size.width,
-            decoration: BoxDecoration(
-              border: Border(
-                bottom: BorderSide(
-                  width: 1,
-                  color: Theme.of(context).colorScheme.primary,
-                ),
-              ),
-            ),
-          ),
-          const SizedBox(height: 4),
+          Divider(color: Theme.of(context).colorScheme.primary),
           Text(
             'Description',
             style: Theme.of(context).textTheme.titleMedium,
@@ -116,19 +109,7 @@ class DetailContentWidget extends StatelessWidget {
             style: Theme.of(context).textTheme.bodyMedium,
             textAlign: TextAlign.justify,
           ),
-          const SizedBox(height: 4),
-          Container(
-            width: MediaQuery.of(context).size.width,
-            decoration: BoxDecoration(
-              border: Border(
-                bottom: BorderSide(
-                  width: 1,
-                  color: Theme.of(context).colorScheme.primary,
-                ),
-              ),
-            ),
-          ),
-          const SizedBox(height: 4),
+          Divider(color: Theme.of(context).colorScheme.primary),
           Text(
             'Menus',
             style: Theme.of(context).textTheme.titleMedium,
@@ -199,52 +180,40 @@ class DetailContentWidget extends StatelessWidget {
               },
             ),
           ),
-          const SizedBox(height: 4),
-          Container(
-            width: MediaQuery.of(context).size.width,
-            decoration: BoxDecoration(
-              border: Border(
-                bottom: BorderSide(
-                  width: 1,
-                  color: Theme.of(context).colorScheme.primary,
-                ),
-              ),
-            ),
-          ),
-          const SizedBox(height: 4),
+          Divider(color: Theme.of(context).colorScheme.primary),
           Text(
             'Customers Review',
             style: Theme.of(context).textTheme.titleMedium,
           ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: restaurant.customerReviews.isNotEmpty
-                ? restaurant.customerReviews.reversed.map((review) {
-                    return ListTile(
-                      leading: Icon(Icons.person_pin, size: 48),
-                      title: Text(
-                        review.name,
-                        style: Theme.of(context).textTheme.bodyLarge,
-                      ),
-                      subtitle: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            review.review,
-                            style: Theme.of(context).textTheme.bodyMedium,
-                          ),
-                          Text(
-                            review.date,
-                            style: Theme.of(context)
-                                .textTheme
-                                .labelMedium
-                                ?.copyWith(fontStyle: FontStyle.italic),
-                          )
-                        ],
-                      ),
-                    );
-                  }).toList()
-                : const [SizedBox()],
+          Center(
+            child: ElevatedButton.icon(
+              onPressed: () {
+                showDialog(
+                  context: context,
+                  builder: (context) => AddCustomerReviewWidget(
+                    restaurantId: restaurant.id,
+                  ),
+                );
+              },
+              icon: const Icon(Icons.add_circle),
+              label: Text(
+                'Add Your Review',
+                style: Theme.of(context).textTheme.bodyLarge,
+              ),
+            ),
+          ),
+          Consumer<CustomerReviewsProvider>(
+            builder: (context, value, child) {
+              return switch (value.resultState) {
+                CustomerReviewLoadedState(data: var customerReviews) =>
+                  CustomerReviewsWidget(
+                    customerReviews: customerReviews,
+                  ),
+                _ => CustomerReviewsWidget(
+                    customerReviews: restaurant.customerReviews,
+                  ),
+              };
+            },
           ),
         ],
       ),

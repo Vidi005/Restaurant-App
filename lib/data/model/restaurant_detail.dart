@@ -11,7 +11,7 @@ class RestaurantDetail {
   String pictureId;
   List<Category> categories;
   Menus menus;
-  double rating;
+  num rating;
   List<CustomerReview> customerReviews;
 
   RestaurantDetail({
