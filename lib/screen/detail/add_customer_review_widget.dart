@@ -34,8 +34,9 @@ class AddCustomerReviewWidget extends StatelessWidget {
                   labelStyle: Theme.of(context).textTheme.labelMedium,
                   prefixIcon: const Icon(Icons.person_pin_rounded),
                 ),
-                onChanged: (value) =>
-                    context.read<CustomerReviewsProvider>().inputName = value,
+                onChanged: (value) => context
+                    .read<CustomerReviewsProvider>()
+                    .onNameChanged(value),
               ),
               Text(
                 "* Name can't be empty",
@@ -52,8 +53,9 @@ class AddCustomerReviewWidget extends StatelessWidget {
                   labelStyle: Theme.of(context).textTheme.labelMedium,
                   prefixIcon: const Icon(Icons.comment_rounded),
                 ),
-                onChanged: (value) =>
-                    context.read<CustomerReviewsProvider>().inputReview = value,
+                onChanged: (value) => context
+                    .read<CustomerReviewsProvider>()
+                    .onReviewChanged(value),
               ),
               Text(
                 "* Review can't be empty",
@@ -67,32 +69,57 @@ class AddCustomerReviewWidget extends StatelessWidget {
           actionsAlignment: MainAxisAlignment.spaceAround,
           alignment: Alignment.center,
           actions: [
-            ElevatedButton(
-              child: Text(
+            ElevatedButton.icon(
+              icon: const Icon(Icons.cancel_rounded),
+              label: Text(
                 'Cancel',
                 style: Theme.of(context).textTheme.bodyMedium,
               ),
               onPressed: () {
                 if (value.resultState is! CustomerReviewLoadingState) {
+                  context.read<CustomerReviewsProvider>().onNameChanged('');
+                  context.read<CustomerReviewsProvider>().onReviewChanged('');
                   Navigator.pop(context);
                 }
               },
             ),
             ElevatedButton.icon(
               icon: value.resultState is CustomerReviewLoadingState
-                  ? const CircularProgressIndicator()
+                  ? SizedBox(
+                      height: 16,
+                      width: 16,
+                      child: const CircularProgressIndicator(strokeWidth: 2),
+                    )
                   : const Icon(Icons.send_rounded),
               label: Text(
                 'Submit',
                 style: Theme.of(context).textTheme.bodyMedium,
               ),
               onPressed: () {
-                if (value.resultState is! CustomerReviewEmptyState) {
+                if (value.resultState is! CustomerReviewLoadingState &&
+                    context
+                        .read<CustomerReviewsProvider>()
+                        .inputName
+                        .isNotEmpty &&
+                    context
+                        .read<CustomerReviewsProvider>()
+                        .inputReview
+                        .isNotEmpty) {
                   context
                       .read<CustomerReviewsProvider>()
                       .fetchCustomerReviews(restaurantId)
                       .then((_) {
-                    if (value.resultState is! CustomerReviewErrorState) {
+                    if (value.resultState is CustomerReviewErrorState) {
+                      var message =
+                          (value.resultState as CustomerReviewErrorState).error;
+                      if (context.mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text('Error: $message'),
+                          ),
+                        );
+                      }
+                    } else {
                       if (context.mounted) {
                         Navigator.pop(context);
                       }

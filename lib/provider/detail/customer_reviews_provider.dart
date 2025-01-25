@@ -16,31 +16,22 @@ class CustomerReviewsProvider extends ChangeNotifier {
 
   onNameChanged(value) {
     inputName = value;
-    if (value.toString().isEmpty) {
-      _resultState = CustomerReviewEmptyState(true);
-    } else {
-      _resultState = CustomerReviewEmptyState(false);
-    }
     notifyListeners();
   }
 
   onReviewChanged(value) {
     inputReview = value;
-    if (value.toString().isEmpty) {
-      _resultState = CustomerReviewEmptyState(true);
-    } else {
-      _resultState = CustomerReviewEmptyState(false);
-    }
+    notifyListeners();
+  }
+
+  resetState() {
+    _resultState = CustomerReviewNoneState();
     notifyListeners();
   }
 
   Future fetchCustomerReviews(id) async {
     try {
-      if (inputName.isEmpty || inputReview.isEmpty) {
-        _resultState = CustomerReviewEmptyState(true);
-      } else {
-        _resultState = CustomerReviewEmptyState(false);
-        notifyListeners();
+      if (inputName.isNotEmpty && inputReview.isNotEmpty) {
         _resultState = CustomerReviewLoadingState();
         notifyListeners();
         var result =
@@ -52,8 +43,8 @@ class CustomerReviewsProvider extends ChangeNotifier {
           inputName = '';
           inputReview = '';
         }
+        notifyListeners();
       }
-      notifyListeners();
     } catch (e) {
       _resultState = CustomerReviewErrorState('$e');
       notifyListeners();

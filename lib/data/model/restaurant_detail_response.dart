@@ -1,4 +1,3 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:restaurant_app/data/model/restaurant_detail.dart';
 
 class RestaurantDetailResponse {
