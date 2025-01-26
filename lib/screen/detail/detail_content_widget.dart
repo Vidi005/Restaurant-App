@@ -121,10 +121,10 @@ class DetailContentWidget extends StatelessWidget {
           SizedBox(
             height: 35,
             child: ListView.builder(
-              itemCount: restaurant.menus.foods.length,
+              itemCount: restaurant.menu.foods.length,
               scrollDirection: Axis.horizontal,
               itemBuilder: (context, index) {
-                var food = restaurant.menus.foods[index];
+                final food = restaurant.menu.foods[index];
                 return Card(
                   color: Theme.of(context).colorScheme.primary.withAlpha(64),
                   shadowColor: Theme.of(context).appBarTheme.shadowColor,
@@ -154,10 +154,10 @@ class DetailContentWidget extends StatelessWidget {
           SizedBox(
             height: 35,
             child: ListView.builder(
-              itemCount: restaurant.menus.drinks.length,
+              itemCount: restaurant.menu.drinks.length,
               scrollDirection: Axis.horizontal,
               itemBuilder: (context, index) {
-                var drink = restaurant.menus.drinks[index];
+                final drink = restaurant.menu.drinks[index];
                 return Card(
                   color: Theme.of(context).colorScheme.primary.withAlpha(64),
                   shadowColor: Theme.of(context).appBarTheme.shadowColor,

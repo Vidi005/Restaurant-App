@@ -7,7 +7,7 @@ class SearchBarWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var searchListProvider = context.read<SearchListProvider>();
+    final searchListProvider = context.read<SearchListProvider>();
     return SearchBar(
       hintText: 'Search Restaurant',
       leading: const Icon(Icons.search),

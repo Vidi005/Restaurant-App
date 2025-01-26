@@ -4,9 +4,9 @@ import 'package:restaurant_app/style/restaurant_colors.dart';
 
 class RestaurantTheme {
   static getTextTheme(brightness) {
-    var isLightTheme = brightness == Brightness.light;
-    var accentTextColor = isLightTheme ? Colors.brown : Colors.white;
-    var primaryTextColor = isLightTheme ? Colors.black : Colors.white;
+    final isLightTheme = brightness == Brightness.light;
+    final accentTextColor = isLightTheme ? Colors.brown : Colors.white;
+    final primaryTextColor = isLightTheme ? Colors.black : Colors.white;
     return TextTheme(
       displayLarge: GoogleFonts.montserratTextTheme().displayLarge?.copyWith(
             color: primaryTextColor,

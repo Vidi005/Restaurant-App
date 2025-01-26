@@ -42,7 +42,7 @@ class SearchScreen extends StatelessWidget {
                       ),
                     ),
                   RestaurantListLoadingState() => const Center(
-                      child: CircularProgressIndicator(),
+                      child: CircularProgressIndicator.adaptive(),
                     ),
                   RestaurantListErrorState(error: var message) => Builder(
                       builder: (context) {
@@ -61,7 +61,7 @@ class SearchScreen extends StatelessWidget {
                     ListView.builder(
                       itemCount: restaurants.length,
                       itemBuilder: (context, index) {
-                        var restaurant = restaurants[index];
+                        final restaurant = restaurants[index];
                         return RestaurantCardWidget(
                           restaurant: restaurant,
                           onTap: () => Navigator.pushNamed(

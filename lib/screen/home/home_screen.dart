@@ -47,7 +47,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 builder: (context, value, child) {
               return switch (value.resultState) {
                 RestaurantListLoadingState() => const Center(
-                    child: CircularProgressIndicator(),
+                    child: CircularProgressIndicator.adaptive(),
                   ),
                 RestaurantListErrorState(error: var message) => Builder(
                     builder: (context) {
@@ -66,7 +66,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   ListView.builder(
                     itemCount: restaurants.length,
                     itemBuilder: (context, index) {
-                      var restaurant = restaurants[index];
+                      final restaurant = restaurants[index];
                       return RestaurantCardWidget(
                         restaurant: restaurant,
                         onTap: () => Navigator.pushNamed(

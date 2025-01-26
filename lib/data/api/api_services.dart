@@ -6,10 +6,10 @@ import 'package:restaurant_app/data/model/restaurant_search_response.dart';
 import 'package:http/http.dart' as http;
 
 class ApiServices {
-  var baseUrl = 'https://restaurant-api.dicoding.dev';
+  final baseUrl = 'https://restaurant-api.dicoding.dev';
 
   Future<RestaurantListResponse> getRestaurantList() async {
-    var response = await http.get(Uri.parse('$baseUrl/list'));
+    final response = await http.get(Uri.parse('$baseUrl/list'));
     if (response.statusCode == 200) {
       return RestaurantListResponse.fromJson(jsonDecode(response.body));
     } else {
@@ -18,7 +18,7 @@ class ApiServices {
   }
 
   Future<RestaurantSearchResponse> getRestaurantSearch(query) async {
-    var response = await http.get(Uri.parse('$baseUrl/search?q=$query'));
+    final response = await http.get(Uri.parse('$baseUrl/search?q=$query'));
     if (response.statusCode == 200) {
       return RestaurantSearchResponse.fromJson(jsonDecode(response.body));
     } else {
@@ -27,7 +27,7 @@ class ApiServices {
   }
 
   Future<RestaurantDetailResponse> getRestaurantDetail(id) async {
-    var response = await http.get(Uri.parse('$baseUrl/detail/$id'));
+    final response = await http.get(Uri.parse('$baseUrl/detail/$id'));
     if (response.statusCode == 200) {
       return RestaurantDetailResponse.fromJson(jsonDecode(response.body));
     } else {
@@ -36,9 +36,9 @@ class ApiServices {
   }
 
   Future<CustomerReviewResponse> postCustomerReview(id, name, review) async {
-    var encodedJsonData =
+    final encodedJsonData =
         'id=${Uri.encodeQueryComponent(id)}&name=${Uri.encodeQueryComponent(name)}&review=${Uri.encodeQueryComponent(review)}';
-    var response = await http.post(
+    final response = await http.post(
       Uri.parse('$baseUrl/review'),
       headers: <String, String>{
         'Content-Type': 'application/x-www-form-urlencoded'

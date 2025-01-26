@@ -62,14 +62,14 @@ class _DetailScreenState extends State<DetailScreen> {
                     builder: (context, value, child) {
                   return switch (value.resultState) {
                     RestaurantDetailLoadingState() => const Center(
-                        child: CircularProgressIndicator(),
+                        child: CircularProgressIndicator.adaptive(),
                       ),
                     RestaurantDetailLoadedState(data: var restaurant) =>
                       CachedNetworkImage(
                         imageUrl: '${RestaurantImageResolution.large.url}'
                             '${restaurant.pictureId}',
                         placeholder: (context, url) => const Center(
-                          child: CircularProgressIndicator(),
+                          child: CircularProgressIndicator.adaptive(),
                         ),
                         fit: BoxFit.cover,
                         alignment: Alignment.center,
@@ -110,7 +110,7 @@ class _DetailScreenState extends State<DetailScreen> {
                 builder: (context, value, child) {
                   return switch (value.resultState) {
                     RestaurantDetailLoadingState() => const Center(
-                        child: CircularProgressIndicator(),
+                        child: CircularProgressIndicator.adaptive(),
                       ),
                     RestaurantDetailLoadedState(data: var restaurant) =>
                       DetailContentWidget(restaurant: restaurant),

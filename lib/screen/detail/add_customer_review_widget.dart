@@ -15,7 +15,7 @@ class AddCustomerReviewWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<CustomerReviewsProvider>(
       builder: (context, value, child) {
-        return AlertDialog(
+        return AlertDialog.adaptive(
           title: Text(
             'Add Review',
             textAlign: TextAlign.center,
@@ -30,6 +30,7 @@ class AddCustomerReviewWidget extends StatelessWidget {
                 decoration: InputDecoration(
                   hintText: 'Enter your name here...',
                   labelText: 'Name',
+                  border: const OutlineInputBorder(),
                   hintStyle: Theme.of(context).textTheme.bodyMedium,
                   labelStyle: Theme.of(context).textTheme.labelMedium,
                   prefixIcon: const Icon(Icons.person_pin_rounded),
@@ -49,6 +50,7 @@ class AddCustomerReviewWidget extends StatelessWidget {
                 decoration: InputDecoration(
                   hintText: 'Enter your review here...',
                   labelText: 'Review',
+                  border: const OutlineInputBorder(),
                   hintStyle: Theme.of(context).textTheme.bodyMedium,
                   labelStyle: Theme.of(context).textTheme.labelMedium,
                   prefixIcon: const Icon(Icons.comment_rounded),
@@ -88,7 +90,8 @@ class AddCustomerReviewWidget extends StatelessWidget {
                   ? SizedBox(
                       height: 16,
                       width: 16,
-                      child: const CircularProgressIndicator(strokeWidth: 2),
+                      child: const CircularProgressIndicator.adaptive(
+                          strokeWidth: 2),
                     )
                   : const Icon(Icons.send_rounded),
               label: Text(
@@ -110,7 +113,7 @@ class AddCustomerReviewWidget extends StatelessWidget {
                       .fetchCustomerReviews(restaurantId)
                       .then((_) {
                     if (value.resultState is CustomerReviewErrorState) {
-                      var message =
+                      final message =
                           (value.resultState as CustomerReviewErrorState).error;
                       if (context.mounted) {
                         ScaffoldMessenger.of(context).showSnackBar(

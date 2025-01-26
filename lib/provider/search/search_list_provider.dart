@@ -1,4 +1,7 @@
+import 'dart:async';
+import 'dart:io';
 import 'package:flutter/widgets.dart';
+import 'package:http/http.dart';
 import 'package:restaurant_app/data/api/api_services.dart';
 import 'package:restaurant_app/static/restaurant_list_result_state.dart';
 
@@ -18,7 +21,7 @@ class SearchListProvider extends ChangeNotifier {
       } else {
         _resultState = RestaurantListLoadingState();
         notifyListeners();
-        var result = await _apiServices.getRestaurantSearch(query);
+        final result = await _apiServices.getRestaurantSearch(query);
         if (result.founded == 0) {
           _resultState = RestaurantListEmptyState();
         } else {
@@ -27,7 +30,16 @@ class SearchListProvider extends ChangeNotifier {
       }
       notifyListeners();
     } catch (e) {
-      _resultState = RestaurantListErrorState('$e');
+      if (e is SocketException || e is ClientException) {
+        _resultState = RestaurantListErrorState('No Internet Connection');
+      } else if (e is TimeoutException) {
+        _resultState = RestaurantListErrorState('Request Timeout');
+      } else if (e is FormatException) {
+        _resultState = RestaurantListErrorState('Data Format is Invalid');
+      } else {
+        _resultState =
+            RestaurantListErrorState('An unexpected error occurred: $e');
+      }
       notifyListeners();
     }
   }

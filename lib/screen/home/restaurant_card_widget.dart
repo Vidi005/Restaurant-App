@@ -45,7 +45,7 @@ class RestaurantCardWidget extends StatelessWidget {
                         imageUrl: '${RestaurantImageResolution.small.url}'
                             '${restaurant.pictureId}',
                         placeholder: (context, url) => const Center(
-                          child: CircularProgressIndicator(),
+                          child: CircularProgressIndicator.adaptive(),
                         ),
                         fadeInDuration: Duration(milliseconds: 500),
                         fit: BoxFit.cover,
