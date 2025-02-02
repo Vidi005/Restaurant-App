@@ -3,7 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:restaurant_app/style/restaurant_colors.dart';
 
 class RestaurantTheme {
-  static getTextTheme(brightness) {
+  static TextTheme getTextTheme(brightness) {
     final isLightTheme = brightness == Brightness.light;
     final accentTextColor = isLightTheme ? Colors.brown : Colors.white;
     final primaryTextColor = isLightTheme ? Colors.black : Colors.white;

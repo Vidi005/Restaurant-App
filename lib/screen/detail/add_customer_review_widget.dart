@@ -47,6 +47,10 @@ class AddCustomerReviewWidget extends StatelessWidget {
                     ?.copyWith(color: Colors.red),
               ),
               TextField(
+                maxLines: 3,
+                minLines: 1,
+                keyboardType: TextInputType.multiline,
+                textCapitalization: TextCapitalization.sentences,
                 decoration: InputDecoration(
                   hintText: 'Enter your review here...',
                   labelText: 'Review',
@@ -119,6 +123,7 @@ class AddCustomerReviewWidget extends StatelessWidget {
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
                             content: Text('Error: $message'),
+                            duration: const Duration(seconds: 3),
                           ),
                         );
                       }

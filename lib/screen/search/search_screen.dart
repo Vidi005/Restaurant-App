@@ -16,6 +16,16 @@ class SearchScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Search Restaurant'),
+        actions: [
+          IconButton(
+            onPressed: () => Navigator.pushNamed(
+              context,
+              NavigationRoute.settingsRoute.name,
+            ),
+            icon: const Icon(Icons.settings),
+            padding: const EdgeInsets.all(16),
+          )
+        ],
       ),
       body: ChangeNotifierProvider(
         create: (context) => SearchListProvider(context.read<ApiServices>()),

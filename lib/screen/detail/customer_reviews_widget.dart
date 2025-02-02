@@ -36,6 +36,7 @@ class CustomerReviewsWidget extends StatelessWidget {
                       )
                     ],
                   ),
+                  contentPadding: EdgeInsets.all(0),
                 );
               }).toList()
             : const [SizedBox()],

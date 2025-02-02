@@ -29,6 +29,16 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Restaurant App'),
+        actions: [
+          IconButton(
+            onPressed: () => Navigator.pushNamed(
+              context,
+              NavigationRoute.settingsRoute.name,
+            ),
+            icon: const Icon(Icons.settings),
+            padding: const EdgeInsets.all(16),
+          )
+        ],
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

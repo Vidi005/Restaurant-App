@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:readmore/readmore.dart';
 import 'package:restaurant_app/data/model/restaurant_detail.dart';
 import 'package:restaurant_app/provider/detail/customer_reviews_provider.dart';
 import 'package:restaurant_app/screen/detail/add_customer_review_widget.dart';
@@ -104,8 +105,13 @@ class DetailContentWidget extends StatelessWidget {
             'Description',
             style: Theme.of(context).textTheme.titleMedium,
           ),
-          Text(
+          ReadMoreText(
             restaurant.description,
+            trimMode: TrimMode.Line,
+            trimLines: 5,
+            trimCollapsedText: 'Show More',
+            trimExpandedText: '\nShow Less',
+            colorClickableText: Theme.of(context).colorScheme.primary,
             style: Theme.of(context).textTheme.bodyMedium,
             textAlign: TextAlign.justify,
           ),
