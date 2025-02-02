@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:restaurant_app/data/api/api_services.dart';
 import 'package:restaurant_app/data/local/local_database_service.dart';
+import 'package:restaurant_app/data/local/local_notification_service.dart';
 import 'package:restaurant_app/data/local/shared_preferences_service.dart';
 import 'package:restaurant_app/provider/detail/customer_reviews_provider.dart';
 import 'package:restaurant_app/provider/detail/restaurant_detail_provider.dart';
@@ -15,6 +16,7 @@ import 'package:restaurant_app/static/navigation_route.dart';
 import 'package:restaurant_app/static/theme_state.dart';
 import 'package:restaurant_app/style/theme/restaurant_theme.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'provider/notification/local_notification_provider.dart';
 import 'screen/favorite/favorite_screen.dart';
 import 'screen/setting/setting_screen.dart';
 
@@ -24,6 +26,16 @@ void main() async {
   runApp(
     MultiProvider(
       providers: [
+        Provider(
+          create: (context) => LocalNotificationService()
+            ..init()
+            ..configureLocalTimeZone(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => LocalNotificationProvider(
+            context.read<LocalNotificationService>()..requestPermissions(),
+          ),
+        ),
         Provider(
           create: (context) => SharedPreferencesService(prefs),
         ),
@@ -63,36 +75,53 @@ class MainApp extends StatefulWidget {
 }
 
 class _MainAppState extends State<MainApp> {
+  late SharedPreferenceProvider sharedPreferenceProvider;
   late ThemeMode themeMode;
+
+  _initializeLunchNotificationState(
+      LocalNotificationProvider localNotifProvider,
+      SharedPreferenceProvider sharedPrefProvider) {
+    sharedPrefProvider.getLunchNotificationValue();
+    final isLunchNotificationEnabled = sharedPrefProvider.lunchNotification;
+    if (isLunchNotificationEnabled == null) {
+      if (mounted && sharedPrefProvider.message.toString().isNotEmpty) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(sharedPrefProvider.message),
+            duration: const Duration(seconds: 3),
+          ),
+        );
+      }
+    } else if (isLunchNotificationEnabled &&
+        localNotifProvider.pendingNotificationRequests.isEmpty) {
+      localNotifProvider.scheduleDailyElevenAMNotification();
+    }
+  }
+
+  _initializeThemeState(SharedPreferenceProvider provider) {
+    final themeMode = provider.getThemeValue();
+    if (themeMode == null) {
+      if (mounted && provider.message.toString().isNotEmpty) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(provider.message),
+            duration: const Duration(seconds: 3),
+          ),
+        );
+      }
+    }
+  }
 
   @override
   void initState() {
     super.initState();
+    final localNotificationProvider = context.read<LocalNotificationProvider>();
     final sharedPreferenceProvider = context.read<SharedPreferenceProvider>();
     Future.microtask(() async {
-      final themeMode = sharedPreferenceProvider.getThemeValue();
-      final isLunchNotificationEnabled =
-          sharedPreferenceProvider.getLunchNotificationValue();
-      if (themeMode == null) {
-        if (mounted && sharedPreferenceProvider.message.toString().isNotEmpty) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(sharedPreferenceProvider.message),
-              duration: const Duration(seconds: 3),
-            ),
-          );
-        }
-      }
-      if (isLunchNotificationEnabled == null) {
-        if (mounted && sharedPreferenceProvider.message.toString().isNotEmpty) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(sharedPreferenceProvider.message),
-              duration: const Duration(seconds: 3),
-            ),
-          );
-        }
-      }
+      _initializeThemeState(sharedPreferenceProvider);
+      await localNotificationProvider.requestPermissions().then((_) =>
+          _initializeLunchNotificationState(
+              localNotificationProvider, sharedPreferenceProvider));
     });
   }
 

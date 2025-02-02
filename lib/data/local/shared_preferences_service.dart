@@ -1,4 +1,3 @@
-import 'package:restaurant_app/static/notification_state.dart';
 import 'package:restaurant_app/static/theme_state.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -30,6 +29,5 @@ class SharedPreferencesService {
       _preference.getString(keyThemeMode) ?? ThemeState.system.name;
 
   getLunchNotification() async =>
-      _preference.getBool(keyLunchNotification) ??
-      NotificationState.enable.isEnable;
+      _preference.getBool(keyLunchNotification) ?? true;
 }
