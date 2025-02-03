@@ -18,9 +18,6 @@ class NotificationSettingWidget extends StatelessWidget {
         ),
         Consumer2<LocalNotificationProvider, SharedPreferenceProvider>(
           builder: (context, localNotifProvider, sharedPrefProvider, child) {
-            localNotifProvider
-              ..requestPermissions()
-              ..checkPendingNotificationsRequests();
             return SwitchListTile.adaptive(
               title: const Text('Lunch Reminder at 11:00 AM'),
               value: sharedPrefProvider.lunchNotification &&
@@ -35,9 +32,17 @@ class NotificationSettingWidget extends StatelessWidget {
                   }
                 });
                 if (value) {
-                  localNotifProvider.scheduleDailyElevenAMNotification();
+                  localNotifProvider.requestPermissions().then((_) {
+                    if (localNotifProvider.notificationPermission) {
+                      localNotifProvider
+                        ..scheduleDailyElevenAMNotification()
+                        ..checkPendingNotificationsRequests();
+                    }
+                  });
                 } else {
-                  localNotifProvider.cancelAllNotifications();
+                  localNotifProvider
+                    ..cancelAllNotifications()
+                    ..checkPendingNotificationsRequests();
                 }
               },
             );

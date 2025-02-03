@@ -20,7 +20,7 @@ class LocalNotificationProvider extends ChangeNotifier {
   }
 
   scheduleDailyElevenAMNotification() {
-    _notificationId = DateTime.now().microsecondsSinceEpoch.hashCode;
+    _notificationId = DateTime.now().millisecondsSinceEpoch.hashCode;
     localNotificationService.scheduleDailyElevenAMNotification(
       id: _notificationId,
       title: 'Daily Lunch Reminder',
@@ -29,12 +29,12 @@ class LocalNotificationProvider extends ChangeNotifier {
     );
   }
 
-  Future checkPendingNotificationsRequests() async {
+  checkPendingNotificationsRequests() async {
     pendingNotificationRequests =
         await localNotificationService.pendingNotificationRequests();
     notifyListeners();
   }
 
-  Future cancelAllNotifications() async =>
+  cancelAllNotifications() async =>
       await localNotificationService.cancelAllNotifications();
 }

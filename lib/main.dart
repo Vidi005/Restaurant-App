@@ -75,36 +75,32 @@ class MainApp extends StatefulWidget {
 }
 
 class _MainAppState extends State<MainApp> {
+  late LocalNotificationProvider localNotificationProvider;
   late SharedPreferenceProvider sharedPreferenceProvider;
   late ThemeMode themeMode;
 
-  _initializeLunchNotificationState(
-      LocalNotificationProvider localNotifProvider,
-      SharedPreferenceProvider sharedPrefProvider) {
-    sharedPrefProvider.getLunchNotificationValue();
-    final isLunchNotificationEnabled = sharedPrefProvider.lunchNotification;
-    if (isLunchNotificationEnabled == null) {
-      if (mounted && sharedPrefProvider.message.toString().isNotEmpty) {
+  _initializeLunchNotificationState() {
+    localNotificationProvider.checkPendingNotificationsRequests();
+    sharedPreferenceProvider.getLunchNotificationValue();
+    if (sharedPreferenceProvider.lunchNotification == null) {
+      if (mounted && sharedPreferenceProvider.message.toString().isNotEmpty) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(sharedPrefProvider.message),
+            content: Text(sharedPreferenceProvider.message),
             duration: const Duration(seconds: 3),
           ),
         );
       }
-    } else if (isLunchNotificationEnabled &&
-        localNotifProvider.pendingNotificationRequests.isEmpty) {
-      localNotifProvider.scheduleDailyElevenAMNotification();
     }
   }
 
-  _initializeThemeState(SharedPreferenceProvider provider) {
-    final themeMode = provider.getThemeValue();
-    if (themeMode == null) {
-      if (mounted && provider.message.toString().isNotEmpty) {
+  _initializeThemeState() {
+    sharedPreferenceProvider.getThemeValue();
+    if (sharedPreferenceProvider.themeMode == null) {
+      if (mounted && sharedPreferenceProvider.message.toString().isNotEmpty) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(provider.message),
+            content: Text(sharedPreferenceProvider.message),
             duration: const Duration(seconds: 3),
           ),
         );
@@ -115,44 +111,59 @@ class _MainAppState extends State<MainApp> {
   @override
   void initState() {
     super.initState();
-    final localNotificationProvider = context.read<LocalNotificationProvider>();
-    final sharedPreferenceProvider = context.read<SharedPreferenceProvider>();
+    localNotificationProvider = context.read<LocalNotificationProvider>();
+    sharedPreferenceProvider = context.read<SharedPreferenceProvider>();
     Future.microtask(() async {
-      _initializeThemeState(sharedPreferenceProvider);
-      await localNotificationProvider.requestPermissions().then((_) =>
-          _initializeLunchNotificationState(
-              localNotificationProvider, sharedPreferenceProvider));
+      _initializeThemeState();
+      await localNotificationProvider.requestPermissions().then((_) {
+        if (localNotificationProvider.notificationPermission) {
+          _initializeLunchNotificationState();
+        }
+      });
     });
   }
 
   @override
-  Widget build(BuildContext context) => Consumer<SharedPreferenceProvider>(
-        builder: (context, value, child) {
-          if (value.themeMode == ThemeState.light.name) {
-            themeMode = ThemeMode.light;
-          } else if (value.themeMode == ThemeState.dark.name) {
-            themeMode = ThemeMode.dark;
-          } else {
-            themeMode = ThemeMode.system;
-          }
-          return MaterialApp(
-            title: 'Restaurant App',
-            theme: RestaurantTheme.lightTheme,
-            darkTheme: RestaurantTheme.darkTheme,
-            themeMode: themeMode,
-            initialRoute: NavigationRoute.mainRoute.name,
-            routes: {
-              NavigationRoute.mainRoute.name: (context) => const MainScreen(),
-              NavigationRoute.detailRoute.name: (context) => DetailScreen(
-                    restaurantId:
-                        ModalRoute.of(context)?.settings.arguments as String,
-                  ),
-              NavigationRoute.favoriteRoute.name: (context) =>
-                  const FavoriteScreen(),
-              NavigationRoute.settingsRoute.name: (context) =>
-                  const SettingScreen(),
-            },
-          );
-        },
-      );
+  Widget build(BuildContext context) {
+    return Consumer2<LocalNotificationProvider, SharedPreferenceProvider>(
+      builder: (context, notificationValue, prefsValue, child) {
+        final isNotificationRequestEmpty =
+            context.select<LocalNotificationProvider, bool>(
+                (value) => value.pendingNotificationRequests.isEmpty);
+        final isNotificationEnabled =
+            context.select<SharedPreferenceProvider, bool>(
+                (value) => value.lunchNotification);
+        if (isNotificationEnabled && isNotificationRequestEmpty) {
+          notificationValue.scheduleDailyElevenAMNotification();
+        }
+        final themeModeName = context.select<SharedPreferenceProvider, String>(
+            (value) => value.themeMode.toString());
+        if (themeModeName == ThemeState.light.name) {
+          themeMode = ThemeMode.light;
+        } else if (themeModeName == ThemeState.dark.name) {
+          themeMode = ThemeMode.dark;
+        } else {
+          themeMode = ThemeMode.system;
+        }
+        return MaterialApp(
+          title: 'Restaurant App',
+          theme: RestaurantTheme.lightTheme,
+          darkTheme: RestaurantTheme.darkTheme,
+          themeMode: themeMode,
+          initialRoute: NavigationRoute.mainRoute.name,
+          routes: {
+            NavigationRoute.mainRoute.name: (context) => const MainScreen(),
+            NavigationRoute.detailRoute.name: (context) => DetailScreen(
+                  restaurantId:
+                      ModalRoute.of(context)?.settings.arguments as String,
+                ),
+            NavigationRoute.favoriteRoute.name: (context) =>
+                const FavoriteScreen(),
+            NavigationRoute.settingsRoute.name: (context) =>
+                const SettingScreen(),
+          },
+        );
+      },
+    );
+  }
 }
