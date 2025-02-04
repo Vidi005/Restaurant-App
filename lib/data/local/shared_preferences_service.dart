@@ -25,9 +25,8 @@ class SharedPreferencesService {
     }
   }
 
-  getThemeMode() async =>
+  getThemeMode() =>
       _preference.getString(keyThemeMode) ?? ThemeState.system.name;
 
-  getLunchNotification() async =>
-      _preference.getBool(keyLunchNotification) ?? true;
+  getLunchNotification() => _preference.getBool(keyLunchNotification) ?? true;
 }

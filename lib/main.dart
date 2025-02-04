@@ -79,17 +79,25 @@ class _MainAppState extends State<MainApp> {
   late SharedPreferenceProvider sharedPreferenceProvider;
   late ThemeMode themeMode;
 
-  _initializeLunchNotificationState() {
-    localNotificationProvider.checkPendingNotificationsRequests();
-    sharedPreferenceProvider.getLunchNotificationValue();
-    if (sharedPreferenceProvider.lunchNotification == null) {
-      if (mounted && sharedPreferenceProvider.message.toString().isNotEmpty) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(sharedPreferenceProvider.message),
-            duration: const Duration(seconds: 3),
-          ),
-        );
+  Future _initializeLunchNotificationState() async {
+    await localNotificationProvider.requestPermissions();
+    if (localNotificationProvider.notificationPermission) {
+      await sharedPreferenceProvider.getLunchNotificationValue();
+      await localNotificationProvider.checkPendingNotificationsRequests();
+      if (sharedPreferenceProvider.lunchNotification == null) {
+        if (mounted && sharedPreferenceProvider.message.toString().isNotEmpty) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(sharedPreferenceProvider.message),
+              duration: const Duration(seconds: 3),
+            ),
+          );
+        }
+      } else if (sharedPreferenceProvider.lunchNotification &&
+          localNotificationProvider.pendingNotificationRequests.isEmpty) {
+        localNotificationProvider
+          ..scheduleDailyElevenAMNotification()
+          ..checkPendingNotificationsRequests();
       }
     }
   }
@@ -115,27 +123,14 @@ class _MainAppState extends State<MainApp> {
     sharedPreferenceProvider = context.read<SharedPreferenceProvider>();
     Future.microtask(() async {
       _initializeThemeState();
-      await localNotificationProvider.requestPermissions().then((_) {
-        if (localNotificationProvider.notificationPermission) {
-          _initializeLunchNotificationState();
-        }
-      });
+      await _initializeLunchNotificationState();
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    return Consumer2<LocalNotificationProvider, SharedPreferenceProvider>(
-      builder: (context, notificationValue, prefsValue, child) {
-        final isNotificationRequestEmpty =
-            context.select<LocalNotificationProvider, bool>(
-                (value) => value.pendingNotificationRequests.isEmpty);
-        final isNotificationEnabled =
-            context.select<SharedPreferenceProvider, bool>(
-                (value) => value.lunchNotification);
-        if (isNotificationEnabled && isNotificationRequestEmpty) {
-          notificationValue.scheduleDailyElevenAMNotification();
-        }
+    return Consumer<SharedPreferenceProvider>(
+      builder: (context, value, child) {
         final themeModeName = context.select<SharedPreferenceProvider, String>(
             (value) => value.themeMode.toString());
         if (themeModeName == ThemeState.light.name) {

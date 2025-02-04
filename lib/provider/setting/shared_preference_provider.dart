@@ -1,5 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:restaurant_app/data/local/shared_preferences_service.dart';
+import 'package:restaurant_app/static/theme_state.dart';
 
 class SharedPreferenceProvider extends ChangeNotifier {
   final SharedPreferencesService _service;
@@ -9,7 +10,7 @@ class SharedPreferenceProvider extends ChangeNotifier {
   var _message = '';
   get message => _message;
 
-  String? _themeMode;
+  var _themeMode = ThemeState.system.name;
   get themeMode => _themeMode;
 
   var _lunchNotification = true;
@@ -41,20 +42,20 @@ class SharedPreferenceProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  getThemeValue() async {
+  getThemeValue() {
     try {
       _message = '';
-      _themeMode = await _service.getThemeMode();
+      _themeMode = _service.getThemeMode();
     } catch (e) {
       _message = 'Failed to get theme value';
     }
     notifyListeners();
   }
 
-  getLunchNotificationValue() async {
+  getLunchNotificationValue() {
     try {
       _message = '';
-      _lunchNotification = await _service.getLunchNotification();
+      _lunchNotification = _service.getLunchNotification();
     } catch (e) {
       _message = 'Failed to get lunch notification value';
     }
