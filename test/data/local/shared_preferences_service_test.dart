@@ -25,14 +25,16 @@ void main() {
 
   group('shared preferences service unit test', () {
     test('should return none when the theme mode value is correct', () async {
-      when(() => preference.setString(any(), any())).thenAnswer((_) async => true);
+      when(() => preference.setString(any(), any()))
+          .thenAnswer((_) async => true);
       evalFunc() async =>
           await sharedPreferencesService.saveThemeMode(correctThemeModeValue);
       expect(evalFunc, returnsNormally);
     });
 
     test('should return none when the theme mode value is incorrect', () async {
-      when(() => preference.setString(any(), any())).thenAnswer((_) async => true);
+      when(() => preference.setString(any(), any()))
+          .thenAnswer((_) async => true);
       evalFunc() async =>
           await sharedPreferencesService.saveThemeMode(incorrectThemeModeValue);
       expect(
@@ -47,7 +49,8 @@ void main() {
 
     test('should return none when the lunch notification value is correct',
         () async {
-      when(() => preference.setBool(any(), any())).thenAnswer((_) async => true);
+      when(() => preference.setBool(any(), any()))
+          .thenAnswer((_) async => true);
       evalFunc() async => await sharedPreferencesService
           .saveLunchNotification(correctLunchNotificationValue);
       expect(evalFunc, returnsNormally);
@@ -55,7 +58,8 @@ void main() {
 
     test('should return none when the lunch notification value is incorrect',
         () {
-      when(() => preference.setBool(any(), any())).thenAnswer((_) async => true);
+      when(() => preference.setBool(any(), any()))
+          .thenAnswer((_) async => true);
       evalFunc() async => await sharedPreferencesService
           .saveLunchNotification(incorrectLunchNotificationValue);
       expect(

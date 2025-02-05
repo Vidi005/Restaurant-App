@@ -28,7 +28,7 @@ class LocalDatabaseProvider extends ChangeNotifier {
         _message = 'Restaurant has been favored';
       }
     } catch (e) {
-      _message = e.toString();
+      _message = 'Failed to favorite restaurant';
     }
     notifyListeners();
   }
