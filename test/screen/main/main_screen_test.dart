@@ -35,7 +35,7 @@ void main() {
 
   group('main screen widget test', () {
     testWidgets(
-        'have bottom navigation bar items like recommendation, search, and favorite of restaurant',
+        'have every component, like AppBar and BottomNavigationBar when app first launch',
         (tester) async {
       when(() => restaurantListProvider.fetchRestaurantList())
           .thenAnswer((_) async => Future.value());
@@ -44,17 +44,58 @@ void main() {
       await tester.pumpWidget(widget);
       await tester.pumpAndSettle();
 
-      final bottomNavigationBar = find.byType(BottomNavigationBar);
-      expect(bottomNavigationBar, findsOneWidget);
+      final appBarFinder = find.byType(AppBar);
+      final bottomNavigationBarFinder = find.byType(BottomNavigationBar);
 
-      final firstBottomNavigationBarItemFinder = find.text('Recommendation');
-      final secondBottomNavigationBarItemFinder =
-          find.text('Search Restaurant');
-      final thirdBottomNavigationBarItemFinder =
-          find.text('Favorite Restaurant');
-      expect(firstBottomNavigationBarItemFinder, findsOneWidget);
-      expect(secondBottomNavigationBarItemFinder, findsOneWidget);
-      expect(thirdBottomNavigationBarItemFinder, findsOneWidget);
+      expect(appBarFinder, findsOneWidget);
+      expect(bottomNavigationBarFinder, findsOneWidget);
+
+      final textInAppBarFinder = find.descendant(
+        of: appBarFinder,
+        matching: find.byType(Text),
+      );
+      final textInAppBar = tester.widget<Text>(textInAppBarFinder);
+      expect(textInAppBar.data, "Restaurant App");
+
+      final firstBottomNavBarIconFinder = find
+          .descendant(
+            of: bottomNavigationBarFinder,
+            matching: find.byType(Icon),
+          )
+          .at(0);
+      final firstBottomNavBarIcon = tester.widget<Icon>(
+        firstBottomNavBarIconFinder,
+      );
+      expect(firstBottomNavBarIcon.icon, Icons.home);
+
+      final secondBottomNavBarIconFinder = find
+          .descendant(
+            of: bottomNavigationBarFinder,
+            matching: find.byType(Icon),
+          )
+          .at(1);
+      final secondBottomNavBarIcon = tester.widget<Icon>(
+        secondBottomNavBarIconFinder,
+      );
+      expect(secondBottomNavBarIcon.icon, Icons.search_sharp);
+
+      final thirdBottomNavBarIconFinder = find
+          .descendant(
+            of: bottomNavigationBarFinder,
+            matching: find.byType(Icon),
+          )
+          .at(2);
+      final thirdBottomNavBarIcon = tester.widget<Icon>(
+        thirdBottomNavBarIconFinder,
+      );
+      expect(thirdBottomNavBarIcon.icon, Icons.favorite);
+
+      final firstBottomNavBarTextFinder = find.text('Recommendation');
+      final secondBottomNavBarTextFinder = find.text('Search Restaurant');
+      final thirdBottomNavBarTextFinder = find.text('Favorite Restaurant');
+      expect(firstBottomNavBarTextFinder, findsOneWidget);
+      expect(secondBottomNavBarTextFinder, findsOneWidget);
+      expect(thirdBottomNavBarTextFinder, findsOneWidget);
     });
   });
 }
