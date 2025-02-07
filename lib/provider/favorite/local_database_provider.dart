@@ -60,8 +60,12 @@ class LocalDatabaseProvider extends ChangeNotifier {
 
   Future deleteRestaurantById(id) async {
     try {
-      await _service.deleteItemById(id);
-      _message = 'Restaurant has been unfavored';
+      final result = await _service.deleteItemById(id);
+      if (result == 0) {
+        _message = 'Failed to unfavored restaurant';
+      } else {
+        _message = 'Restaurant has been unfavored';
+      }
     } catch (e) {
       _message = 'Failed to unfavored restaurant';
     }

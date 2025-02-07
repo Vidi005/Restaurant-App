@@ -43,6 +43,7 @@ class SearchScreen extends StatelessWidget {
                 return switch (value.resultState) {
                   RestaurantListNoneState() => Center(
                       child: Column(
+                        key: const Key('none state'),
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Icon(Icons.manage_search_outlined, size: 96),
@@ -84,11 +85,12 @@ class SearchScreen extends StatelessWidget {
                     ),
                   RestaurantListEmptyState() => Center(
                       child: Column(
+                        key: const Key('empty state'),
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Icon(Icons.playlist_remove, size: 96),
                           const SizedBox(height: 8),
-                          const Text('No results found!'),
+                          const Text('No result found!'),
                         ],
                       ),
                     ),

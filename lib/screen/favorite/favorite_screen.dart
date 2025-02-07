@@ -62,6 +62,7 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
                       value.restaurantList?.reversed.toList() ?? [];
                   return restaurants.isNotEmpty
                       ? ListView.builder(
+                          key: const ValueKey('favoredRestaurantListView'),
                           itemCount: restaurants.length,
                           itemBuilder: (context, index) => RestaurantCardWidget(
                             restaurant: restaurants[index],
@@ -77,6 +78,9 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
                             Expanded(
                               child: const Center(
                                 child: Column(
+                                  key: ValueKey(
+                                    'noFavoredRestaurantIndicator',
+                                  ),
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     Icon(Icons.playlist_remove, size: 96),

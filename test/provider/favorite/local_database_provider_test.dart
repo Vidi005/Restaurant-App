@@ -45,6 +45,8 @@ void main() {
 
     test('should return success message when the inserted value is valid',
         () async {
+      when(() => localDatabaseService.insertItem(validValue))
+          .thenAnswer((_) => Future.value(1));
       await localDatabaseProvider.saveRestaurant(validValue);
       expect(localDatabaseProvider.message, equals(successInsertMessage));
     });
@@ -81,7 +83,7 @@ void main() {
 
     test('should return failed message when the id is null', () async {
       when(() => localDatabaseService.getItemById(nullRestaurantId))
-          .thenAnswer((_) => Future.value(null));
+          .thenAnswer((_) => Future.value(0));
       await localDatabaseProvider.loadRestaurantById(nullRestaurantId);
       expect(
           localDatabaseProvider.message, equals(failedLoadRestaurantMessage));

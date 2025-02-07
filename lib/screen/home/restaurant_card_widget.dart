@@ -18,6 +18,7 @@ class RestaurantCardWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
+      key: ValueKey(restaurant.id),
       shadowColor: Theme.of(context).appBarTheme.shadowColor,
       margin: EdgeInsets.all(8),
       elevation: 4,

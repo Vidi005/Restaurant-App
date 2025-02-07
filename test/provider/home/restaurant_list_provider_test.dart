@@ -21,6 +21,7 @@ void main() {
   const validRestaurantPictureId = '14';
   const validRestaurantCity = 'Medan';
   const validRestaurantRating = 4.2;
+
   final successResponse = RestaurantListResponse(
     error: successErrorResponse,
     message: successMessageResponse,
@@ -116,10 +117,11 @@ void main() {
       await restaurantListProvider.fetchRestaurantList();
       final resultState = restaurantListProvider.resultState;
       expect(
-          resultState.error,
-          equals(RestaurantListErrorState(
-                  'An unexpected error occurred: Exception: ')
-              .error),);
+        resultState.error,
+        equals(RestaurantListErrorState(
+                'An unexpected error occurred: Exception: ')
+            .error),
+      );
     });
   });
 }

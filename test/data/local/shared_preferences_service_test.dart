@@ -32,7 +32,7 @@ void main() {
       expect(evalFunc, returnsNormally);
     });
 
-    test('should return none when the theme mode value is incorrect', () async {
+    test('should return $thrownOfErrorThemeMode when the theme mode value is incorrect', () async {
       when(() => preference.setString(any(), any()))
           .thenAnswer((_) async => true);
       evalFunc() async =>
@@ -56,7 +56,7 @@ void main() {
       expect(evalFunc, returnsNormally);
     });
 
-    test('should return none when the lunch notification value is incorrect',
+    test('should return $thrownOfErrorLunchNotification when the lunch notification value is incorrect',
         () {
       when(() => preference.setBool(any(), any()))
           .thenAnswer((_) async => true);

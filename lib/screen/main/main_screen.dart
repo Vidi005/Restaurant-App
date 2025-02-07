@@ -33,11 +33,13 @@ class MainScreen extends StatelessWidget {
             tooltip: 'Recommendation',
           ),
           BottomNavigationBarItem(
+            key: const ValueKey('Search Restaurant'),
             icon: const Icon(Icons.search_sharp),
             label: 'Search Restaurant',
             tooltip: 'Search Restaurant',
           ),
           BottomNavigationBarItem(
+            key: const ValueKey('Favorite Restaurant'),
             icon: const Icon(Icons.favorite),
             label: 'Favorite Restaurant',
             tooltip: 'Favored Restaurant',

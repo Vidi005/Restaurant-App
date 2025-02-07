@@ -58,6 +58,7 @@ class _FavoriteIconWidgetState extends State<FavoriteIconWidget> {
         localDatabaseProvider.loadFavoredRestaurants();
       },
       icon: Icon(
+        key: ValueKey('favoriteButton'),
         context.watch<FavoriteIconProvider>().isFavored
             ? Icons.favorite_rounded
             : Icons.favorite_outline_rounded,

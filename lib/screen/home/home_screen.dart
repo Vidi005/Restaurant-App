@@ -74,6 +74,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 RestaurantListLoadedState(data: var restaurants) =>
                   ListView.builder(
+                    key: const ValueKey('restaurantListView'),
                     itemCount: restaurants.length,
                     itemBuilder: (context, index) {
                       final restaurant = restaurants[index];

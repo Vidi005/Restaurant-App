@@ -52,6 +52,7 @@ class _DetailScreenState extends State<DetailScreen> {
                 backgroundColor:
                     Theme.of(context).colorScheme.onPrimary.withAlpha(128),
                 child: IconButton(
+                  key: const Key('backButton'),
                   icon: const Icon(Icons.arrow_back),
                   onPressed: () => Navigator.pop(context),
                 ),

@@ -9,6 +9,7 @@ class SearchBarWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final searchListProvider = context.read<SearchListProvider>();
     return SearchBar(
+      key: const ValueKey('searchBar'),
       hintText: 'Search Restaurant',
       leading: const Icon(Icons.search),
       shadowColor: WidgetStatePropertyAll(
