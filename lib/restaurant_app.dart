@@ -100,10 +100,7 @@ class _RestaurantAppViewState extends State<RestaurantAppView> {
       if (sharedPreferenceProvider.lunchNotification == null) {
         if (mounted && sharedPreferenceProvider.message.toString().isNotEmpty) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(sharedPreferenceProvider.message),
-              duration: const Duration(seconds: 3),
-            ),
+            SnackBar(content: Text(sharedPreferenceProvider.message)),
           );
         }
       } else if (sharedPreferenceProvider.lunchNotification &&
@@ -120,10 +117,7 @@ class _RestaurantAppViewState extends State<RestaurantAppView> {
     if (sharedPreferenceProvider.themeMode == null) {
       if (mounted && sharedPreferenceProvider.message.toString().isNotEmpty) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(sharedPreferenceProvider.message),
-            duration: const Duration(seconds: 3),
-          ),
+          SnackBar(content: Text(sharedPreferenceProvider.message)),
         );
       }
     }

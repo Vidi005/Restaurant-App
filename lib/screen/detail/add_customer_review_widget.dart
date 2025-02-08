@@ -121,10 +121,7 @@ class AddCustomerReviewWidget extends StatelessWidget {
                           (value.resultState as CustomerReviewErrorState).error;
                       if (context.mounted) {
                         ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text('Error: $message'),
-                            duration: const Duration(seconds: 3),
-                          ),
+                          SnackBar(content: Text('Error: $message')),
                         );
                       }
                     } else {

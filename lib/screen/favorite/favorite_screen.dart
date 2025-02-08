@@ -30,6 +30,7 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
         title: const Text('Favored Restaurants'),
         actions: [
           IconButton(
+            key: ValueKey('settingButton'),
             onPressed: () => Navigator.pushNamed(
               context,
               NavigationRoute.settingsRoute.name,
@@ -95,10 +96,7 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
                                 SchedulerBinding.instance
                                     .addPostFrameCallback((_) {
                                   ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                      content: Text(value.message),
-                                      duration: const Duration(seconds: 3),
-                                    ),
+                                    SnackBar(content: Text(value.message)),
                                   );
                                 });
                               }

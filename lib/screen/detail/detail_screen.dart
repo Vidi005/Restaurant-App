@@ -151,10 +151,7 @@ class _DetailScreenState extends State<DetailScreen> {
                       Builder(builder: (context) {
                         SchedulerBinding.instance.addPostFrameCallback((_) {
                           ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text('Error: $message'),
-                              duration: const Duration(seconds: 3),
-                            ),
+                            SnackBar(content: Text('Error: $message')),
                           );
                         });
                         return const SizedBox();

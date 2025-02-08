@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -21,23 +20,6 @@ class EvaluateRobot {
     await tester.pumpAndSettle();
     await tester.pumpWidget(widget);
     await tester.pumpAndSettle();
-  }
-
-  Future acceptNotificationPermissions() async {
-    if (Platform.isAndroid &&
-        num.parse(Platform.operatingSystemVersion) >= 13) {
-      final isContainPermissionDialog = find.textContaining(RegExp(
-          r'(permission|notification|allow|ok|notifikasi|izin)',
-          caseSensitive: false));
-      if (isContainPermissionDialog.hasFound) {
-        await tester.tap(find
-            .textContaining(
-              RegExp(r'(allow|ok|izinkan)', caseSensitive: false),
-            )
-            .first);
-        await tester.pumpAndSettle();
-      }
-    }
   }
 
   Future scrollToBottom(valueKey) async {
@@ -74,6 +56,12 @@ class EvaluateRobot {
     await tester.pumpAndSettle();
   }
 
+  Future tapBackButton() async {
+    await tester.pumpAndSettle();
+    await tester.tap(find.backButton());
+    await tester.pumpAndSettle();
+  }
+
   Future checkFirstRestaurantListItem(name, city, rating) async {
     await tester.pumpAndSettle();
     final restaurantListFinder = find.byKey(restaurantListViewKey);
@@ -107,6 +95,7 @@ class EvaluateRobot {
     expect(restaurantName.data, equals(name));
     expect(restaurantCity.data, equals(city));
     expect(restaurantRating.data, equals(rating.toString()));
+    await tester.pumpAndSettle();
   }
 
   Future typeSearchRestaurant(query) async {
@@ -143,5 +132,37 @@ class EvaluateRobot {
     expect(emptyIcon.icon, Icons.playlist_remove);
     expect(emptyText.data, equals(emptyFavoredRestaurant));
     await tester.pumpAndSettle();
+  }
+
+  Future checkThemeSetting(mode) async {
+    await tester.pumpAndSettle();
+    final themeModeFinder = find.byType(SnackBar);
+    final themeTextFinder = find.descendant(
+      of: themeModeFinder,
+      matching: find.byType(Text),
+    );
+    final themeMode = tester.widget<Text>(themeTextFinder);
+    expect(
+      themeMode.data,
+      equals('Theme mode has been changed to $mode theme'),
+    );
+    await tester.pumpAndSettle(const Duration(seconds: 3));
+  }
+
+  Future checkNotificationSetting(state) async {
+    await tester.pumpAndSettle();
+    final notificationFinder = find.byType(SnackBar);
+    final notificationTextFinder = find.descendant(
+      of: notificationFinder,
+      matching: find.byType(Text),
+    );
+    final notification = tester.widget<Text>(notificationTextFinder);
+    expect(
+      notification.data,
+      equals(
+        'Lunch notification reminder has been ${state ? 'enabled' : 'disabled'}',
+      ),
+    );
+    await tester.pumpAndSettle(const Duration(seconds: 3));
   }
 }

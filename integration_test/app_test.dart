@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
 import 'package:restaurant_app/restaurant_app.dart';
+import 'package:restaurant_app/static/theme_state.dart';
 import 'robot/evaluate_robot.dart';
 
 void main() {
@@ -12,9 +13,6 @@ void main() {
 
     // Load UI
     await evaluateRobot.loadUI(const RestaurantApp());
-
-    // // Accept notification permission
-    // await evaluateRobot.acceptNotificationPermissions();
 
     // Check the first Restaurant List item and scroll to bottom
     await evaluateRobot.checkFirstRestaurantListItem('Melting Pot', 'Medan', 4.2);
@@ -27,7 +25,6 @@ void main() {
     await evaluateRobot.tapItem(ValueKey('Search Restaurant'));
     await evaluateRobot.tapButton(ValueKey('searchBar'));
     await evaluateRobot.typeSearchRestaurant('melting');
-    // await evaluateRobot.checkFirstRestaurantListItem('Melting Pot', 'Medan', 4.2);
 
     // Tap first Search Restaurant item and click Favorite Button
     await evaluateRobot.tapItem(ValueKey('rqdv5juczeskfw1e867'));
@@ -45,5 +42,17 @@ void main() {
 
     // Check empty favored restaurant list
     await evaluateRobot.checkEmptyFavoredRestaurant();
+
+    // Check theme setting
+    await evaluateRobot.tapButton(ValueKey('settingButton'));
+    await evaluateRobot.tapItem(ValueKey(ThemeState.dark.name));
+    await evaluateRobot.checkThemeSetting(ThemeState.dark.name);
+
+    // Check notification setting
+    await evaluateRobot.tapItem(ValueKey('notificationSwitch'));
+    await evaluateRobot.checkNotificationSetting(false);
+    await evaluateRobot.tapItem(ValueKey('notificationSwitch'));
+    await evaluateRobot.checkNotificationSetting(true);
+    await evaluateRobot.tapBackButton();
   });
 }

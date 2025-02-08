@@ -63,10 +63,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     builder: (context) {
                       SchedulerBinding.instance.addPostFrameCallback((_) {
                         ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text('Error: $message'),
-                            duration: const Duration(seconds: 3),
-                          ),
+                          SnackBar(content: Text('Error: $message')),
                         );
                       });
                       return const SizedBox();

@@ -18,6 +18,7 @@ class ThemeSettingWidget extends StatelessWidget {
           ...ThemeState.values.map(
             (mode) => Consumer<SharedPreferenceProvider>(
               builder: (context, provider, child) => RadioListTile.adaptive(
+                key: ValueKey(mode.name),
                 title: Text(mode.name),
                 value: mode.name,
                 groupValue: provider.themeMode,
@@ -25,7 +26,10 @@ class ThemeSettingWidget extends StatelessWidget {
                 onChanged: (value) => provider.saveThemeMode(value).then((_) {
                   if (context.mounted) {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text(provider.message)),
+                      SnackBar(
+                        content: Text(provider.message),
+                        duration: Duration(seconds: 2),
+                      ),
                     );
                   }
                 }),

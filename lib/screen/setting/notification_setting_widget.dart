@@ -19,6 +19,7 @@ class NotificationSettingWidget extends StatelessWidget {
         Consumer2<LocalNotificationProvider, SharedPreferenceProvider>(
           builder: (context, localNotifProvider, sharedPrefProvider, child) {
             return SwitchListTile.adaptive(
+              key: ValueKey('notificationSwitch'),
               title: const Text('Lunch Reminder at 11:00 AM'),
               value: sharedPrefProvider.lunchNotification &&
                   localNotifProvider.pendingNotificationRequests.isNotEmpty,
@@ -27,7 +28,10 @@ class NotificationSettingWidget extends StatelessWidget {
                 sharedPrefProvider.saveLunchNotification(value).then((_) {
                   if (context.mounted) {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text(sharedPrefProvider.message)),
+                      SnackBar(
+                        content: Text(sharedPrefProvider.message),
+                        duration: Duration(seconds: 2),
+                      ),
                     );
                   }
                 });
