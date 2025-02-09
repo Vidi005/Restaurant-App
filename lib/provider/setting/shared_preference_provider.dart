@@ -13,7 +13,7 @@ class SharedPreferenceProvider extends ChangeNotifier {
   var _themeMode = ThemeState.system.name;
   get themeMode => _themeMode;
 
-  var _lunchNotification = true;
+  var _lunchNotification = false;
   get lunchNotification => _lunchNotification;
 
   Future saveThemeMode(theme) async {

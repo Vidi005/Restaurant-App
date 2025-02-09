@@ -54,9 +54,9 @@ void main() {
 
     // Check notification setting
     await evaluateRobot.tapItem(ValueKey('notificationSwitch'));
-    await evaluateRobot.checkNotificationSetting(false);
-    await evaluateRobot.tapItem(ValueKey('notificationSwitch'));
     await evaluateRobot.checkNotificationSetting(true);
+    await evaluateRobot.tapItem(ValueKey('notificationSwitch'));
+    await evaluateRobot.checkNotificationSetting(false);
     await evaluateRobot.tapBackButton();
   });
 }

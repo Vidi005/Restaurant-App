@@ -106,20 +106,13 @@ class _RestaurantAppViewState extends State<RestaurantAppView> {
   late ThemeMode themeMode;
 
   Future _initializeLunchNotificationState() async {
-    await localNotificationProvider.requestPermissions();
-    if (localNotificationProvider.notificationPermission) {
-      await sharedPreferenceProvider.getLunchNotificationValue();
-      await localNotificationProvider.checkPendingNotificationsRequests();
-      if (sharedPreferenceProvider.lunchNotification == null) {
-        if (mounted && sharedPreferenceProvider.message.toString().isNotEmpty) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(sharedPreferenceProvider.message)),
-          );
-        }
-      } else if (sharedPreferenceProvider.lunchNotification &&
-          localNotificationProvider.pendingNotificationRequests.isEmpty) {
-        await localNotificationProvider.scheduleDailyElevenAMNotification();
-        await localNotificationProvider.checkPendingNotificationsRequests();
+    await sharedPreferenceProvider.getLunchNotificationValue();
+    await localNotificationProvider.checkPendingNotificationsRequests();
+    if (sharedPreferenceProvider.lunchNotification == null) {
+      if (mounted && sharedPreferenceProvider.message.toString().isNotEmpty) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(sharedPreferenceProvider.message)),
+        );
       }
     }
   }
