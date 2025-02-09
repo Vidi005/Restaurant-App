@@ -8,6 +8,6 @@ class ReceivedNotification {
     this.id,
     this.title,
     this.body,
-    this.payload,
+    required this.payload,
   });
 }

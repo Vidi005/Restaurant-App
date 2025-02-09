@@ -1,24 +1,34 @@
 import 'dart:async';
+import 'dart:math';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_timezone/flutter_timezone.dart';
+import 'package:restaurant_app/data/api/api_services.dart';
+import 'package:restaurant_app/data/model/restaurant_list.dart';
+import 'package:restaurant_app/static/restaurant_image_resolution.dart';
 import 'package:timezone/data/latest_all.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
+import '../model/received_notification.dart';
 
 final flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
-// final didReceiveLocalNotificationStream = StreamController<ReceivedNotification>.broadcast();
+final didReceiveLocalNotificationStream =
+    StreamController<ReceivedNotification>.broadcast();
 
 final selectNotificationStream = StreamController<String?>.broadcast();
 
 class LocalNotificationService {
+  final ApiServices _apiServices;
+
+  LocalNotificationService(this._apiServices);
+
   Future init() async {
     final initializationSettingsAndroid =
         AndroidInitializationSettings('app_icon');
     final initializationSettingsIOS = DarwinInitializationSettings(
-      requestAlertPermission: true,
-      requestBadgePermission: true,
-      requestSoundPermission: true,
+      requestAlertPermission: false,
+      requestBadgePermission: false,
+      requestSoundPermission: false,
     );
     final initializationSettings = InitializationSettings(
       android: initializationSettingsAndroid,
@@ -91,6 +101,23 @@ class LocalNotificationService {
     return scheduledDate;
   }
 
+  Future<RestaurantList> _getRandomRestaurantItem() async {
+    try {
+      final response = await _apiServices.getRestaurantList();
+      return response
+          .restaurants[Random().nextInt(response.restaurants.length)];
+    } catch (e) {
+      return RestaurantList(
+        id: '',
+        name: 'It\'s time for lunch',
+        description: '',
+        pictureId: '',
+        city: '',
+        rating: 0.0,
+      );
+    }
+  }
+
   Future scheduleDailyElevenAMNotification({
     required int id,
     required String title,
@@ -99,33 +126,66 @@ class LocalNotificationService {
     final channelId = '1',
     final channelName = 'Daily Lunch Reminder',
   }) async {
+    final randomRestaurantItem = await _getRandomRestaurantItem();
+    final smallImagePath = await _apiServices.downloadAndSaveImageFile(
+      '${RestaurantImageResolution.small.url}${randomRestaurantItem.pictureId}',
+      'smallIcon',
+    );
+    final mediumImagePath = await _apiServices.downloadAndSaveImageFile(
+      '${RestaurantImageResolution.medium.url}${randomRestaurantItem.pictureId}',
+      'mediumPicture.jpg',
+    );
+
+    final bigPictureStyleInformation = BigPictureStyleInformation(
+      FilePathAndroidBitmap(mediumImagePath),
+      largeIcon: FilePathAndroidBitmap(smallImagePath),
+      contentTitle: '<b>Recommended Restaurant for You!</b>',
+      htmlFormatContentTitle: true,
+      summaryText: '${randomRestaurantItem.name}, ${randomRestaurantItem.city}',
+      htmlFormatSummaryText: true,
+    );
+
     final androidPlatformChannelSpecifics = AndroidNotificationDetails(
       channelId,
       channelName,
       importance: Importance.max,
       priority: Priority.high,
+      styleInformation: bigPictureStyleInformation,
       playSound: true,
       ticker: 'ticker',
     );
+
     final iOSPlatformChannelSpecifics = DarwinNotificationDetails(
       presentAlert: true,
       presentBadge: true,
       presentSound: true,
+      attachments: [
+        DarwinNotificationAttachment(
+          mediumImagePath,
+          hideThumbnail: false,
+        )
+      ],
     );
+
     final notificationDetails = NotificationDetails(
       android: androidPlatformChannelSpecifics,
       iOS: iOSPlatformChannelSpecifics,
     );
+
     await flutterLocalNotificationsPlugin.zonedSchedule(
       id,
-      title,
-      body,
+      randomRestaurantItem.id.isNotEmpty
+          ? 'Recommended Restaurant for You!'
+          : title,
+      randomRestaurantItem.id.isNotEmpty
+          ? '${randomRestaurantItem.name}, ${randomRestaurantItem.city}'
+          : body,
       _nextInstanceOfElevenAM(),
       notificationDetails,
       androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
       uiLocalNotificationDateInterpretation:
           UILocalNotificationDateInterpretation.wallClockTime,
-      payload: payload,
+      payload: randomRestaurantItem.id,
       matchDateTimeComponents: DateTimeComponents.time,
     );
   }
@@ -136,6 +196,10 @@ class LocalNotificationService {
     return pendingNotificationRequests;
   }
 
-  Future cancelAllNotifications() async =>
-      await flutterLocalNotificationsPlugin.cancelAll();
+  Future cancelAllNotifications() async {
+    _apiServices
+      ..deleteImageFile('smallIcon')
+      ..deleteImageFile('mediumPicture.jpg');
+    await flutterLocalNotificationsPlugin.cancelAll();
+  }
 }

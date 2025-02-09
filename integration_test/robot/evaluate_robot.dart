@@ -26,7 +26,7 @@ class EvaluateRobot {
     var reachedBottom = false;
     while (!reachedBottom) {
       final beforeScrollOffset = tester.getTopLeft(find.byKey(valueKey)).dy;
-      await tester.drag(find.byKey(valueKey), const Offset(0, -500));
+      await tester.drag(find.byKey(valueKey), const Offset(0, -1000));
       await tester.pumpAndSettle();
       final afterScrollOffset = tester.getTopLeft(find.byKey(valueKey)).dy;
       reachedBottom = beforeScrollOffset == afterScrollOffset;
@@ -37,7 +37,7 @@ class EvaluateRobot {
     var reachedTop = false;
     while (!reachedTop) {
       final beforeScrollOffset = tester.getTopLeft(find.byKey(valueKey)).dy;
-      await tester.drag(find.byKey(valueKey), const Offset(0, 500));
+      await tester.drag(find.byKey(valueKey), const Offset(0, 1000));
       await tester.pumpAndSettle();
       final afterScrollOffset = tester.getTopLeft(find.byKey(valueKey)).dy;
       reachedTop = beforeScrollOffset == afterScrollOffset;
@@ -149,7 +149,7 @@ class EvaluateRobot {
     await tester.pumpAndSettle(const Duration(seconds: 3));
   }
 
-  Future checkNotificationSetting(state) async {
+  Future checkNotificationSetting(isEnabled) async {
     await tester.pumpAndSettle();
     final notificationFinder = find.byType(SnackBar);
     final notificationTextFinder = find.descendant(
@@ -160,7 +160,7 @@ class EvaluateRobot {
     expect(
       notification.data,
       equals(
-        'Lunch notification reminder has been ${state ? 'enabled' : 'disabled'}',
+        'Lunch notification reminder has been ${isEnabled ? 'enabled' : 'disabled'}',
       ),
     );
     await tester.pumpAndSettle(const Duration(seconds: 3));

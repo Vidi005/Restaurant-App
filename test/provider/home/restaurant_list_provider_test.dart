@@ -17,7 +17,7 @@ void main() {
   const successMessageResponse = 'success';
   const validRestaurantId = 'rqdv5juczeskfw1e867';
   const validRestaurantName = 'Melting Pot';
-  const validRestaurantDescription = 'description';
+  const validRestaurantDescription = 'Dummy description';
   const validRestaurantPictureId = '14';
   const validRestaurantCity = 'Medan';
   const validRestaurantRating = 4.2;

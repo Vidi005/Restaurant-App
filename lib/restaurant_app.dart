@@ -5,6 +5,7 @@ import 'package:restaurant_app/data/local/local_database_service.dart';
 import 'package:restaurant_app/data/local/local_notification_service.dart';
 import 'package:restaurant_app/data/local/shared_preferences_service.dart';
 import 'package:restaurant_app/provider/detail/customer_reviews_provider.dart';
+import 'package:restaurant_app/provider/detail/payload_provider.dart';
 import 'package:restaurant_app/provider/detail/restaurant_detail_provider.dart';
 import 'package:restaurant_app/provider/favorite/local_database_provider.dart';
 import 'package:restaurant_app/provider/home/restaurant_list_provider.dart';
@@ -21,21 +22,29 @@ import 'screen/favorite/favorite_screen.dart';
 import 'screen/setting/setting_screen.dart';
 
 class RestaurantApp extends StatelessWidget {
-  const RestaurantApp({super.key});
+  final String initialRoute;
+  final String? payload;
+
+  const RestaurantApp({
+    super.key,
+    required this.initialRoute,
+    this.payload,
+  });
 
   @override
   Widget build(BuildContext context) {
-    WidgetsFlutterBinding.ensureInitialized();
     return FutureBuilder(
       future: SharedPreferences.getInstance(),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           return MultiProvider(
             providers: [
+              Provider(create: (context) => ApiServices()),
               Provider(
-                create: (context) => LocalNotificationService()
-                  ..init()
-                  ..configureLocalTimeZone(),
+                create: (context) =>
+                    LocalNotificationService(context.read<ApiServices>())
+                      ..init()
+                      ..configureLocalTimeZone(),
               ),
               ChangeNotifierProvider(
                 create: (context) => LocalNotificationProvider(
@@ -52,7 +61,6 @@ class RestaurantApp extends StatelessWidget {
                     context.read<SharedPreferencesService>()),
               ),
               ChangeNotifierProvider(create: (context) => IndexNavProvider()),
-              Provider(create: (context) => ApiServices()),
               ChangeNotifierProvider(
                 create: (context) =>
                     RestaurantListProvider(context.read<ApiServices>()),
@@ -67,10 +75,14 @@ class RestaurantApp extends StatelessWidget {
               ),
               Provider(create: (context) => LocalDatabaseService()),
               ChangeNotifierProvider(
-                  create: (context) => LocalDatabaseProvider(
-                      context.read<LocalDatabaseService>()))
+                create: (context) =>
+                    LocalDatabaseProvider(context.read<LocalDatabaseService>()),
+              ),
+              ChangeNotifierProvider(
+                create: (context) => PayloadProvider(payload: payload),
+              ),
             ],
-            child: const RestaurantAppView(),
+            child: RestaurantAppView(initialRoute: initialRoute),
           );
         } else {
           return const SizedBox();
@@ -81,7 +93,8 @@ class RestaurantApp extends StatelessWidget {
 }
 
 class RestaurantAppView extends StatefulWidget {
-  const RestaurantAppView({super.key});
+  final String initialRoute;
+  const RestaurantAppView({super.key, required this.initialRoute});
 
   @override
   State<RestaurantAppView> createState() => _RestaurantAppViewState();
@@ -105,9 +118,8 @@ class _RestaurantAppViewState extends State<RestaurantAppView> {
         }
       } else if (sharedPreferenceProvider.lunchNotification &&
           localNotificationProvider.pendingNotificationRequests.isEmpty) {
-        localNotificationProvider
-          ..scheduleDailyElevenAMNotification()
-          ..checkPendingNotificationsRequests();
+        await localNotificationProvider.scheduleDailyElevenAMNotification();
+        await localNotificationProvider.checkPendingNotificationsRequests();
       }
     }
   }
@@ -152,12 +164,13 @@ class _RestaurantAppViewState extends State<RestaurantAppView> {
           theme: RestaurantTheme.lightTheme,
           darkTheme: RestaurantTheme.darkTheme,
           themeMode: themeMode,
-          initialRoute: NavigationRoute.mainRoute.name,
+          initialRoute: widget.initialRoute,
           routes: {
             NavigationRoute.mainRoute.name: (context) => const MainScreen(),
             NavigationRoute.detailRoute.name: (context) => DetailScreen(
                   restaurantId:
-                      ModalRoute.of(context)?.settings.arguments as String,
+                      ModalRoute.of(context)?.settings.arguments as String? ??
+                          '',
                 ),
             NavigationRoute.favoriteRoute.name: (context) =>
                 const FavoriteScreen(),

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
 import 'package:restaurant_app/provider/detail/favorite_icon_provider.dart';
+import 'package:restaurant_app/provider/detail/payload_provider.dart';
 import 'package:restaurant_app/provider/detail/restaurant_detail_provider.dart';
 import 'package:restaurant_app/screen/detail/detail_content_widget.dart';
 import 'package:restaurant_app/screen/detail/favorite_icon_widget.dart';
@@ -26,8 +27,9 @@ class _DetailScreenState extends State<DetailScreen> {
   @override
   void initState() {
     super.initState();
-    Future.microtask(() {
+    Future.microtask(() async {
       if (mounted) {
+        context.read<PayloadProvider>().payload;
         context
             .read<RestaurantDetailProvider>()
             .fetchRestaurantDetail(widget.restaurantId);

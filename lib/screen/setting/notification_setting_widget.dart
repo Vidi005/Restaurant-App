@@ -39,8 +39,11 @@ class NotificationSettingWidget extends StatelessWidget {
                   localNotifProvider.requestPermissions().then((_) {
                     if (localNotifProvider.notificationPermission) {
                       localNotifProvider
-                        ..scheduleDailyElevenAMNotification()
-                        ..checkPendingNotificationsRequests();
+                        ..cancelAllNotifications()
+                        ..scheduleDailyElevenAMNotification().then((_) {
+                          localNotifProvider
+                              .checkPendingNotificationsRequests();
+                        });
                     }
                   });
                 } else {

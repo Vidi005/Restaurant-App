@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
 import 'package:restaurant_app/restaurant_app.dart';
+import 'package:restaurant_app/static/navigation_route.dart';
 import 'package:restaurant_app/static/theme_state.dart';
 import 'robot/evaluate_robot.dart';
 
@@ -12,10 +13,13 @@ void main() {
     final evaluateRobot = EvaluateRobot(tester);
 
     // Load UI
-    await evaluateRobot.loadUI(const RestaurantApp());
+    await evaluateRobot.loadUI(
+      RestaurantApp(initialRoute: NavigationRoute.mainRoute.name),
+    );
 
     // Check the first Restaurant List item and scroll to bottom
-    await evaluateRobot.checkFirstRestaurantListItem('Melting Pot', 'Medan', 4.2);
+    await evaluateRobot.checkFirstRestaurantListItem(
+        'Melting Pot', 'Medan', 4.2);
     await evaluateRobot.scrollToBottom(ValueKey('restaurantListView'));
 
     // Scroll to top
